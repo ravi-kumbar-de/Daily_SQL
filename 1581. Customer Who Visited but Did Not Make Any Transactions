@@ -1,6 +1,10 @@
-SELECT DISTINCT v.customer_id
+with cte as(
+SELECT  v.customer_id,count(v.customer_id)as count_no_trans
 FROM Visits v
 LEFT JOIN Transactions t
 ON v.visit_id = t.visit_id
 WHERE t.transaction_id IS NULL
-ORDER BY v.customer_id;
+group by v.customer_id
+)
+select customer_id,count_no_trans
+from cte
