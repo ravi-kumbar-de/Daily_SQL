@@ -1,0 +1,9 @@
+/* Write your PL/SQL query statement below */
+SELECT id
+FROM (
+    SELECT id,
+           temperature,
+           LAG(temperature) OVER (ORDER BY recordDate) AS prev_temperature
+    FROM Weather
+)
+WHERE temperature > prev_temperature;
