@@ -1,0 +1,13 @@
+with denominator as (
+select count(*) as denom from users )
+, 
+numerator as (
+    select contest_id,count(user_id)  as num from register
+    group by contest_id
+)
+select contest_id , 
+round (num/denom*100 ,2) as percentage
+from  denominator ,numerator 
+order by percentage desc, 
+contest_id asc
+
