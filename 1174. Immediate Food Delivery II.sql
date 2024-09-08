@@ -1,14 +1,12 @@
-WITH FirstOrders AS (
-    -- Get the first order (earliest order_date) for each customer
-    SELECT delivery_id, customer_id, order_date, customer_pref_delivery_date
+WITH RankedOrders AS (
+    -- Rank orders for each customer based on order_date to get the first order
+    SELECT 
+        *,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) AS order_rank
     FROM Delivery
-    WHERE (customer_id, order_date) IN (
-        SELECT customer_id, MIN(order_date)
-        FROM Delivery
-        GROUP BY customer_id
-    )
 )
 SELECT 
-    ROUND(SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END) 
+    ROUND(SUM(CASE WHEN order_date = customer_pref_delivery_date AND order_rank = 1 THEN 1 ELSE 0 END)
     / COUNT(*) * 100, 2) AS immediate_percentage
-FROM FirstOrders;
+FROM RankedOrders
+WHERE order_rank = 1;
