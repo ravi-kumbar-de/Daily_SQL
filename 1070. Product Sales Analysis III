@@ -1,0 +1,14 @@
+# Write your MySQL query statement below
+
+select product_id,
+quantity, 
+price,
+`year` as first_year
+ from (
+select 
+*,
+rank() over(partition by product_id order by `year`)  as rn
+from
+sales ) a
+
+where rn =1
