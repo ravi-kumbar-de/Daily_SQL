@@ -1,0 +1,11 @@
+# Write your MySQL query statement below
+
+
+select distinct num as ConsecutiveNums  
+from (
+    select lead(num) over(order by id) as leader,
+            num,
+            lag(num) over(order by id) as lagger
+    from logs
+    ) a
+where leader=num and lagger = num and leader=lagger
